@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/shader">
+        <file>vsrc.vert</file>
+        <file>fsrc.frag</file>
+    </qresource>
+    <qresource prefix="/obj">
+        <file>stone.obj</file>
+        <file>vanquish.obj</file>
+    </qresource>
+    <qresource prefix="/texture">
+        <file>diffuso.png</file>
+        <file>stone.jpg</file>
+        <file>vanquish.jpg</file>
+    </qresource>
+</RCC>

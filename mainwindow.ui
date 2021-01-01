@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1045</width>
+    <height>633</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="1" column="1">
+     <layout class="QGridLayout" name="modifyGridLayout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="zPosLabel">
+        <property name="text">
+         <string>Z方向</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="zPosEdit"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="yPosEdit"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="xPosEdit"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="xPosLabel">
+        <property name="text">
+         <string>X方向</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="yPosLabel">
+        <property name="text">
+         <string>Y方向</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1">
+     <layout class="QGridLayout" name="createGridLayout" columnstretch="0,0">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>7</number>
+      </property>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="createJointOKBtn">
+        <property name="text">
+         <string>完成</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="setRootBtn">
+        <property name="text">
+         <string>设为基结点</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="text">
+         <string>删除</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="outSelectModeBtn">
+        <property name="text">
+         <string>退出选择模式</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="createBoneOKBtn">
+        <property name="text">
+         <string>完成</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="createJointBtn">
+        <property name="text">
+         <string>创建关节</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="inSelectModeBtn">
+        <property name="text">
+         <string>进入选择模式</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="createBoneBtn">
+        <property name="text">
+         <string>创建骨骼</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0" rowspan="2">
+     <layout class="QGridLayout" name="showGridLayout" rowminimumheight="400,400,0" columnminimumwidth="500,500">
+      <item row="0" column="0">
+       <widget class="MyOpenglWidget" name="openGLRenderWidget"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QOpenGLWidget" name="openGLFrontWidget"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QOpenGLWidget" name="openGLSideWidget"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QOpenGLWidget" name="openGLTopWidget"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1045</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>MyOpenglWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>myopenglwidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
