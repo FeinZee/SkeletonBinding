@@ -2,6 +2,8 @@
     <qresource prefix="/shader">
         <file>vsrc.vert</file>
         <file>fsrc.frag</file>
+        <file>sphere.fsh</file>
+        <file>sphere.vsh</file>
     </qresource>
     <qresource prefix="/obj">
         <file>stone.obj</file>

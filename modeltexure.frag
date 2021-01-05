@@ -1,4 +1,4 @@
-#version 330
+#version 430
 uniform sampler2D sTexture;
 in vec2 vTextureCood;
 in vec4 vAmbient;

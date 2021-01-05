@@ -29,13 +29,15 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         myopenglwidget.cpp \
-        objloader.cpp
+        objloader.cpp \
+        solidsphererender.cpp
 
 HEADERS += \
         genericrender.h \
         mainwindow.h \
         myopenglwidget.h \
-        objloader.h
+        objloader.h \
+        solidsphererender.h
 
 FORMS += \
         mainwindow.ui
@@ -49,6 +51,9 @@ DISTFILES += \
     Stone.obj \
     diffuso.png \
     fsrc.frag \
+    sphere.frag \
+    sphere.fsh \
+    sphere.vsh \
     vsrc.vert
 
 RESOURCES += \

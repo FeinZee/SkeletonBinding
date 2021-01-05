@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1045</width>
-    <height>633</height>
+    <width>1245</width>
+    <height>891</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,20 +15,20 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_4">
-    <item row="1" column="1">
+    <item row="2" column="1">
      <layout class="QGridLayout" name="modifyGridLayout">
-      <item row="2" column="0">
-       <widget class="QLabel" name="zPosLabel">
-        <property name="text">
-         <string>Z方向</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="2">
        <widget class="QLineEdit" name="zPosEdit"/>
       </item>
       <item row="1" column="2">
        <widget class="QLineEdit" name="yPosEdit"/>
+      </item>
+      <item row="5" column="2">
+       <widget class="QLabel" name="mousePressPosLabel">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
       </item>
       <item row="0" column="2">
        <widget class="QLineEdit" name="xPosEdit"/>
@@ -40,6 +40,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="zPosLabel">
+        <property name="text">
+         <string>Z方向</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="yPosLabel">
         <property name="text">
@@ -47,7 +54,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="4" column="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -62,7 +69,21 @@
       </item>
      </layout>
     </item>
-    <item row="0" column="1">
+    <item row="1" column="0" rowspan="2">
+     <layout class="QGridLayout" name="showGridLayout">
+      <item row="2" column="0">
+       <widget class="MyOpenglWidget" name="openGLRenderWidget">
+        <property name="minimumSize">
+         <size>
+          <width>800</width>
+          <height>800</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="1">
      <layout class="QGridLayout" name="createGridLayout" columnstretch="0,0">
       <property name="leftMargin">
        <number>0</number>
@@ -70,77 +91,85 @@
       <property name="verticalSpacing">
        <number>7</number>
       </property>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="createJointOKBtn">
-        <property name="text">
-         <string>完成</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="setRootBtn">
-        <property name="text">
-         <string>设为基结点</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="deleteBtn">
-        <property name="text">
-         <string>删除</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="outSelectModeBtn">
-        <property name="text">
-         <string>退出选择模式</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="createBoneOKBtn">
-        <property name="text">
-         <string>完成</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QPushButton" name="createJointBtn">
         <property name="text">
          <string>创建关节</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QPushButton" name="inSelectModeBtn">
         <property name="text">
          <string>进入选择模式</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QPushButton" name="createBoneBtn">
         <property name="text">
          <string>创建骨骼</string>
         </property>
        </widget>
       </item>
-     </layout>
-    </item>
-    <item row="0" column="0" rowspan="2">
-     <layout class="QGridLayout" name="showGridLayout" rowminimumheight="400,400,0" columnminimumwidth="500,500">
-      <item row="0" column="0">
-       <widget class="MyOpenglWidget" name="openGLRenderWidget"/>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="setRootBtn">
+        <property name="text">
+         <string>设为基结点</string>
+        </property>
+       </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QOpenGLWidget" name="openGLFrontWidget"/>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="createBoneOKBtn">
+        <property name="text">
+         <string>完成</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="outSelectModeBtn">
+        <property name="text">
+         <string>退出选择模式</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QPushButton" name="deleteBtn">
+        <property name="text">
+         <string>删除</string>
+        </property>
+       </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QOpenGLWidget" name="openGLSideWidget"/>
+       <widget class="QPushButton" name="createJointOKBtn">
+        <property name="text">
+         <string>完成</string>
+        </property>
+       </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QOpenGLWidget" name="openGLTopWidget"/>
+      <item row="0" column="0">
+       <widget class="QComboBox" name="modeComboBox">
+        <item>
+         <property name="text">
+          <string>骨架创建模式</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>骨架修改模式</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>运动模式</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>纯模型模式</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </item>
@@ -151,7 +180,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1045</width>
+     <width>1245</width>
      <height>26</height>
     </rect>
    </property>

@@ -4,10 +4,7 @@
 #include <string>
 #include <stdio.h>
 void GenericRender::initsize(QString filename, const QImage &textureImg){
-    QString fileName = QCoreApplication::applicationDirPath();
 
-
-    qDebug() << fileName;
     m_program.addCacheableShaderFromSourceFile(QOpenGLShader::Vertex, ":/shader/vsrc.vert");
     m_program.addCacheableShaderFromSourceFile(QOpenGLShader::Fragment, ":/shader/fsrc.frag");
     m_program.link();
@@ -23,9 +20,6 @@ void GenericRender::initsize(QString filename, const QImage &textureImg){
     m_texture = new QOpenGLTexture(textureImg);
     m_texture->setWrapMode(QOpenGLTexture::ClampToEdge);
     m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Linear);
-
-
-
 }
 void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatrix4x4 &vMatrix,
                            QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation){
