@@ -25,18 +25,23 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        camera.cpp \
         genericrender.cpp \
         main.cpp \
         mainwindow.cpp \
         myopenglwidget.cpp \
         objloader.cpp \
+        skeletonjoint.cpp \
         solidsphererender.cpp
 
 HEADERS += \
+        camera.h \
         genericrender.h \
         mainwindow.h \
         myopenglwidget.h \
         objloader.h \
+        param.h \
+        skeletonjoint.h \
         solidsphererender.h
 
 FORMS += \

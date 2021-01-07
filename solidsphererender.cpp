@@ -32,6 +32,7 @@ void SolidSphereRender::initialize(float r)
                    << x2 << y2 << z2 << x3 << y3 << z3;
         }
     }
+
     m_vbo.create();
     m_vbo.bind();
     m_vbo.allocate(m_points.constData(),m_points.count() * sizeof(GLfloat));

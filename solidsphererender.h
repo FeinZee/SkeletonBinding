@@ -3,8 +3,7 @@
 #include <QOpenGLExtraFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
-#include <math.h>
-#define PI 3.14159265f
+#include "param.h"
 
 class SolidSphereRender
 {
