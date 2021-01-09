@@ -27,31 +27,47 @@ void SolidSphereRender::initialize(float r)
             float y3 = r * ::cos((vAngle + angleSpan) * toRadius) * ::sin(hAngle * toRadius);
             float z3 = r * ::sin((vAngle + angleSpan) * toRadius);
 
-            m_points << x1 << y1 << z1 << x3 << y3 << z3
-                   << x0 << y0 << z0 << x1 << y1 << z1
-                   << x2 << y2 << z2 << x3 << y3 << z3;
+            QVector3D v3v1(x1-x3, y1-y3, z1-z3);
+            QVector3D v3v0(x0-x3, y0-y3, z0-z3);
+            QVector3D norm1 = QVector3D::crossProduct(v3v1, v3v0);
+
+            QVector3D v2v1(x1-x2, y1-y2, z1-z2);
+            QVector3D v2v3(x3-x2, y3-y2, z3-z2);
+            QVector3D norm2 = QVector3D::crossProduct(v2v1, v2v3);
+
+            m_points << x1 << y1 << z1 << x3 << y3 << z3 << x0 << y0 << z0
+                     << x1 << y1 << z1 << x2 << y2 << z2 << x3 << y3 << z3;
+
+            m_norm_points << norm1.x() << norm1.y() << norm1.z() << norm1.x() << norm1.y() << norm1.z() << norm1.x() << norm1.y() << norm1.z()
+                          << norm2.x() << norm2.y() << norm2.z() << norm2.x() << norm2.y() << norm2.z() << norm2.x() << norm2.y() << norm2.z();
         }
     }
-
+    QVector<float> points;
+    points << m_points << m_norm_points;
     m_vbo.create();
     m_vbo.bind();
-    m_vbo.allocate(m_points.constData(),m_points.count() * sizeof(GLfloat));
+    m_vbo.allocate(points.constData(), points.count() * sizeof(GLfloat));
 }
 
-void SolidSphereRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &projMatrix, QMatrix4x4 modelMatrix,  QMatrix4x4 &viewMatrix, QVector3D &lightLocation)
+void SolidSphereRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &projMatrix, QMatrix4x4 modelMatrix,  QMatrix4x4 &viewMatrix,
+                                QVector3D &cameraLocation, QVector3D &lightLocation, QVector4D color)
 {
     glEnable(GL_CULL_FACE);
     m_program.bind();
     m_vbo.bind();
-    m_program.setUniformValue("uPMatrix",projMatrix);
-    m_program.setUniformValue("uVMatrix",viewMatrix);
-    m_program.setUniformValue("uMMatrix",modelMatrix);
-    m_program.setUniformValue("uR",m_r);
+    m_program.setUniformValue("uPMatrix", projMatrix);
+    m_program.setUniformValue("uVMatrix", viewMatrix);
+    m_program.setUniformValue("uMMatrix", modelMatrix);
+    m_program.setUniformValue("uLightLocation", lightLocation);
+    m_program.setUniformValue("uCamera", cameraLocation);
+    m_program.setUniformValue("uColor", color);
+
     m_program.enableAttributeArray(0);
-
-    m_program.setAttributeBuffer(0,GL_FLOAT,0,3,0);
-
-    f->glDrawArrays(GL_TRIANGLES,0,m_points.count() / 3);
+    m_program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 0);
+    m_program.enableAttributeArray(1);
+    m_program.setAttributeBuffer(1, GL_FLOAT, m_points.count() * sizeof(GLfloat), 3, 3 * sizeof(GLfloat));
+    glPolygonMode(GL_FRONT_AND_BACK ,GL_FILL);
+    f->glDrawArrays(GL_TRIANGLES, 0, m_points.count() / 3);
 
     m_program.disableAttributeArray(0);
     m_vbo.release();

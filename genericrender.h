@@ -13,7 +13,7 @@ public:
     GenericRender() = default;
     void initsize(QString filename, const QImage &textureImg);
     void render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatrix4x4 &vMatrix,
-                QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation);
+                QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation, bool ifWireMode);
 private:
     QOpenGLTexture *m_texture{nullptr};
     QOpenGLBuffer m_vbo;

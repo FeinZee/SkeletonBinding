@@ -46,19 +46,50 @@ public:
         return viewMatrix;
     }
 
+    void lookFrom(char direction){
+        if (direction == 'f') {
+            Position = QVector3D(0, 0, 3);
+            Yaw = YAW;
+            Pitch = PITCH;
+            Front = QVector3D(0, 0, -1);
+        }
+        if (direction == 't') {
+            Position = QVector3D(0, 3, 0);
+            Yaw = YAW;
+            Pitch = -89;
+            Front = QVector3D(0, -1, 0);
+        }
+        if (direction == 'l') {
+            Position = QVector3D(-3, 0, 0);
+            Yaw = 0;
+            Pitch = 0;
+            Front = QVector3D(1, 0, 0);
+        }
+        if (direction == 'r') {
+            Position = QVector3D(3, 0, 0);
+            Front = QVector3D(-1, 0, 0);
+            Yaw = -180;
+            Pitch = 0;
+        }
+        WorldUp = QVector3D(0.0f, 1.0f, 0.0f);
+
+        Zoom = ZOOM;
+        updateCameraVectors();
+    }
+
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-//    void ProcessKeyboard(Camera_Movement direction, float deltaTime)
-//    {
-//        float velocity = MovementSpeed * deltaTime;
-//        if (direction == FORWARD)
-//            Position += Front * velocity;
-//        if (direction == BACKWARD)
-//            Position -= Front * velocity;
-//        if (direction == LEFT)
-//            Position -= Right * velocity;
-//        if (direction == RIGHT)
-//            Position += Right * velocity;
-//    }
+    void ProcessKeyboard(char direction, float deltaTime)
+    {
+        float velocity = MovementSpeed * deltaTime;
+        if (direction == 'w')
+            Position += Front * velocity;
+        if (direction == 's')
+            Position -= Front * velocity;
+        if (direction == 'a')
+            Position -= Right * velocity;
+        if (direction == 'd')
+            Position += Right * velocity;
+    }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true)

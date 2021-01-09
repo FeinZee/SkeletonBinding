@@ -22,7 +22,7 @@ void GenericRender::initsize(QString filename, const QImage &textureImg){
     m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Linear);
 }
 void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatrix4x4 &vMatrix,
-                           QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation){
+                           QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation, bool ifWireMode){
     m_program.bind();
     m_vbo.bind();
     f->glActiveTexture(GL_TEXTURE0 + 0);
@@ -36,11 +36,14 @@ void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatri
     m_program.enableAttributeArray(0);
     m_program.enableAttributeArray(1);
     m_program.enableAttributeArray(2);
-    m_program.setAttributeBuffer(0,GL_FLOAT,0,3,3*sizeof(GLfloat));
-    m_program.setAttributeBuffer(1,GL_FLOAT,m_vertPoints.count() * sizeof(GLfloat),2,2*sizeof(GLfloat));
-    m_program.setAttributeBuffer(2,GL_FLOAT,(m_vertPoints.count() + m_texturePoints.count()) * sizeof(GLfloat),3,3*sizeof(GLfloat));
+    m_program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 3*sizeof(GLfloat));
+    m_program.setAttributeBuffer(1, GL_FLOAT, m_vertPoints.count() * sizeof(GLfloat), 2, 2*sizeof(GLfloat));
+    m_program.setAttributeBuffer(2, GL_FLOAT, (m_vertPoints.count() + m_texturePoints.count()) * sizeof(GLfloat), 3, 3*sizeof(GLfloat));
     m_texture->bind(0);
-    f->glDrawArrays(GL_TRIANGLES,0,m_vertPoints.count()/3);
+    if (ifWireMode) {
+       glPolygonMode(GL_FRONT_AND_BACK ,GL_LINE);
+    }
+    f->glDrawArrays(GL_TRIANGLES, 0, m_vertPoints.count()/3);
 
     m_program.disableAttributeArray(0);
     m_program.disableAttributeArray(1);

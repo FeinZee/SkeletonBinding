@@ -10,5 +10,5 @@ void main(void)
 {
     vec4 finalColor = texture2D(sTexture,vTextureCood);
     finalColor = finalColor * (vAmbient + vDiffuse + vSpecular);
-    fragColor = finalColor;
+    fragColor = finalColor * vec4(0.6, 0.6, 0.6, 0);
 }

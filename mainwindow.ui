@@ -18,10 +18,18 @@
     <item row="2" column="1">
      <layout class="QGridLayout" name="modifyGridLayout">
       <item row="2" column="2">
-       <widget class="QLineEdit" name="zPosEdit"/>
+       <widget class="QLineEdit" name="zPosEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLineEdit" name="yPosEdit"/>
+       <widget class="QLineEdit" name="yPosEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="5" column="2">
        <widget class="QLabel" name="mousePressPosLabel">
@@ -31,7 +39,11 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QLineEdit" name="xPosEdit"/>
+       <widget class="QLineEdit" name="xPosEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="xPosLabel">
@@ -77,16 +89,6 @@
          <size>
           <width>800</width>
           <height>800</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QOpenGLWidget" name="openGLWidget">
-        <property name="minimumSize">
-         <size>
-          <width>600</width>
-          <height>600</height>
          </size>
         </property>
        </widget>

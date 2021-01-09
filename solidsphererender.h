@@ -10,12 +10,14 @@ class SolidSphereRender
 public:
     SolidSphereRender() = default;
     void initialize(float r);
-    void render(QOpenGLExtraFunctions *f,QMatrix4x4 &posMatrix, QMatrix4x4 model, QMatrix4x4 &viewMatrix, QVector3D &lightLocation);
+    void render(QOpenGLExtraFunctions *f,QMatrix4x4 &posMatrix, QMatrix4x4 model, QMatrix4x4 &viewMatrix,
+                QVector3D &cameraLocation, QVector3D &lightLocation, QVector4D color);
 
 private:
     QOpenGLShaderProgram m_program;
     QOpenGLBuffer m_vbo;
     QVector<GLfloat> m_points;
+    QVector<GLfloat> m_norm_points;
     float m_r;
 
 };
