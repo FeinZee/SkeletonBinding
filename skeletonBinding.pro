@@ -31,6 +31,7 @@ SOURCES += \
         mainwindow.cpp \
         myopenglwidget.cpp \
         objloader.cpp \
+        pyramidrender.cpp \
         skeletonjoint.cpp \
         solidsphererender.cpp
 
@@ -41,6 +42,7 @@ HEADERS += \
         myopenglwidget.h \
         objloader.h \
         param.h \
+        pyramidrender.h \
         skeletonjoint.h \
         solidsphererender.h
 
@@ -59,7 +61,9 @@ DISTFILES += \
     sphere.frag \
     sphere.fsh \
     sphere.vsh \
-    vsrc.vert
+    vsrc.vert \
+    wire.frag \
+    wire.vert
 
 LIBS += -lopengl32 -lglu32
 

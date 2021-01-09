@@ -16,8 +16,9 @@ void MyOpenglWidget::initializeGL(){
     obj_renderer.initsize(":/obj/vanquish.obj",QImage(":/texture/vanquish.jpg"));
 
     /* about skeleton */
-    s_renderer.initialize(0.02f); // 0.02 is the radius of the sphere joint
+    s_renderer.initialize(JOINT_RADIUS);
     s_selected_renderer.initialize(0.025f);
+    bone_renderer.initialize();
 }
 
 void MyOpenglWidget::resizeGL(int w, int h){
@@ -69,8 +70,9 @@ void MyOpenglWidget::paintGL(){
     if (aJointIsSelected) {
         s_selected_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, selectedJoint.getModelMatrix(), viewMatrix,
                                    camera.Position, lightLocation, QVector4D(0.6f, 0.6f, 0, 0));
-        qDebug() << "拾取到的点" << selectedJoint.getWorldCoordinate();
     }
+
+    bone_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), QVector3D(0.5, 0.5, 0), QVector3D(1, 1, 0), JOINT_RADIUS, projMatrix, viewMatrix, camera.Position);
 
 
 }

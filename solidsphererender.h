@@ -10,7 +10,7 @@ class SolidSphereRender
 public:
     SolidSphereRender() = default;
     void initialize(float r);
-    void render(QOpenGLExtraFunctions *f,QMatrix4x4 &posMatrix, QMatrix4x4 model, QMatrix4x4 &viewMatrix,
+    void render(QOpenGLExtraFunctions *f, QMatrix4x4 &projMatrix, QMatrix4x4 modelMatrix, QMatrix4x4 &viewMatrix,
                 QVector3D &cameraLocation, QVector3D &lightLocation, QVector4D color);
 
 private:

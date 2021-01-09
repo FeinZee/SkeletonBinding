@@ -11,6 +11,7 @@
 #include "camera.h"
 #include "skeletonjoint.h"
 #include "genericrender.h"
+#include "pyramidrender.h"
 #include "solidsphererender.h"
 
 
@@ -55,9 +56,7 @@ private:
     std::vector<SkeletonJoint> joints;
     SolidSphereRender s_renderer; // renderer for joints
     SolidSphereRender s_selected_renderer; // renderer for the selected joint
-
-    QVector3D pos;
-
+    PyramidRender bone_renderer;
 };
 
 #endif // MYOPENGLWIDGET_H

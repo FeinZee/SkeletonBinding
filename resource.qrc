@@ -4,6 +4,8 @@
         <file>fsrc.frag</file>
         <file>sphere.fsh</file>
         <file>sphere.vsh</file>
+        <file>wire.frag</file>
+        <file>wire.vert</file>
     </qresource>
     <qresource prefix="/obj">
         <file>stone.obj</file>
