@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -60,6 +60,8 @@ DISTFILES += \
     sphere.fsh \
     sphere.vsh \
     vsrc.vert
+
+LIBS += -lopengl32 -lglu32
 
 RESOURCES += \
     resource.qrc

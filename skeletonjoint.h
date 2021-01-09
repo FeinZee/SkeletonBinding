@@ -6,12 +6,13 @@
 class SkeletonJoint
 {
 public:
-    SkeletonJoint();
+    SkeletonJoint(QVector3D);
 
-    QMatrix4x4& getModelMatrix();
+    QVector3D& getWorldCordinate();
+    QMatrix4x4 getModelMatrix();
 private:
     // 世界坐标
-    QMatrix4x4 modelMatrix;
+    QVector3D worldCordinate;
 };
 
 #endif // SKELETONJOINT_H

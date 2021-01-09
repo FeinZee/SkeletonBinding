@@ -1,11 +1,17 @@
 #include "skeletonjoint.h"
 
-SkeletonJoint::SkeletonJoint()
+SkeletonJoint::SkeletonJoint(QVector3D pos)
 {
-    modelMatrix.setToIdentity();
-    modelMatrix.translate(0, 0, 1);
+    worldCordinate = pos;
 }
 
-QMatrix4x4& SkeletonJoint::getModelMatrix(){
-    return modelMatrix;
+QVector3D& SkeletonJoint::getWorldCordinate(){
+    return worldCordinate;
+}
+
+QMatrix4x4 SkeletonJoint::getModelMatrix(){
+    QMatrix4x4 m;
+    m.setToIdentity();
+    m.translate(worldCordinate);
+    return m;
 }

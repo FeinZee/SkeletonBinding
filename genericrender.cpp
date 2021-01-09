@@ -23,7 +23,6 @@ void GenericRender::initsize(QString filename, const QImage &textureImg){
 }
 void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatrix4x4 &vMatrix,
                            QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation){
-    f->glEnable(GL_DEPTH_TEST);
     m_program.bind();
     m_vbo.bind();
     f->glActiveTexture(GL_TEXTURE0 + 0);
@@ -49,5 +48,4 @@ void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatri
     m_texture->release();
     m_vbo.release();
     m_program.release();
-    f->glDisable(GL_DEPTH_TEST);
 }

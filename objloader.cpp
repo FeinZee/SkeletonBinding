@@ -24,7 +24,7 @@ bool ObjLoader::load(QString fileName, QVector<float> &vPoints,QVector<float> &t
 
     while (!objFile.atEnd()) {
         QByteArray lineData = objFile.readLine();
-        lineData = lineData.remove(lineData.count() - 1,1);
+        lineData = lineData.remove(lineData.count() - 2,2);
         if(lineData.isEmpty()){
 
             for(auto &verFaceInfo : facesIndexs){

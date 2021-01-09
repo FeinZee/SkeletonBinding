@@ -38,11 +38,9 @@ void SolidSphereRender::initialize(float r)
     m_vbo.allocate(m_points.constData(),m_points.count() * sizeof(GLfloat));
 }
 
-void SolidSphereRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &projMatrix, QMatrix4x4 &modelMatrix,  QMatrix4x4 &viewMatrix, QVector3D &lightLocation)
+void SolidSphereRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &projMatrix, QMatrix4x4 modelMatrix,  QMatrix4x4 &viewMatrix, QVector3D &lightLocation)
 {
-
-    f->glEnable(GL_DEPTH_TEST);
-    f->glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     m_program.bind();
     m_vbo.bind();
     m_program.setUniformValue("uPMatrix",projMatrix);
@@ -52,11 +50,11 @@ void SolidSphereRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &projMatrix,
     m_program.enableAttributeArray(0);
 
     m_program.setAttributeBuffer(0,GL_FLOAT,0,3,0);
+
     f->glDrawArrays(GL_TRIANGLES,0,m_points.count() / 3);
 
     m_program.disableAttributeArray(0);
     m_vbo.release();
     m_program.release();
-    f->glDisable(GL_DEPTH_TEST);
-    f->glDisable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
 }

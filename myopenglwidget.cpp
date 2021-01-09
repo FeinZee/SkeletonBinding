@@ -5,10 +5,12 @@ MyOpenglWidget::MyOpenglWidget(QWidget *parent)
     : QOpenGLWidget(parent),
       lightLocation(10,10,1)
 {
+
 }
 
 void MyOpenglWidget::initializeGL(){
 
+    initializeOpenGLFunctions();
     /* about model */
     obj_renderer.initsize(":/obj/vanquish.obj",QImage(":/texture/vanquish.jpg"));
 
@@ -19,6 +21,11 @@ void MyOpenglWidget::initializeGL(){
 void MyOpenglWidget::resizeGL(int w, int h){
     width = w;
     height = h;
+
+    glViewport(0, 0, w, h);
+    glClearDepth(1.0);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
 
     projMatrix.setToIdentity();
     projMatrix.perspective(camera.Zoom, float(w)/h, 0.01f, 100.0f);
@@ -41,8 +48,8 @@ void MyOpenglWidget::wheelEvent(QWheelEvent *event)
 
 void MyOpenglWidget::paintGL(){
     QOpenGLExtraFunctions *f = QOpenGLContext::currentContext()->extraFunctions();
-    f->glClearColor(0.1f,0.0f,0.0f,1.0f);
-    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.1f,0.0f,0.0f,1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     /* about obj */
     QMatrix4x4 viewMatrix = camera.GetViewMatrix();
@@ -53,41 +60,25 @@ void MyOpenglWidget::paintGL(){
     mMatrix.rotate(obj_angleY,0,1,0);
     obj_renderer.render(f, projMatrix, viewMatrix, mMatrix, camera.Position, lightLocation);
     /* about skeleton */
-    QMatrix4x4 test;
-    test.setToIdentity();
-    test.translate(pos);
-    s_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, test, viewMatrix, lightLocation);
     for (auto joint: joints) {
         s_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, joint.getModelMatrix(), viewMatrix, lightLocation);
     }
-
 }
 
 void MyOpenglWidget::mousePressEvent(QMouseEvent *event) {
-    if (event->button() == Qt::RightButton) {        
-        QMatrix4x4 modelMatrix;
-        modelMatrix.setToIdentity();
-        QMatrix4x4 viewMatrix = camera.GetViewMatrix();
-        viewMatrix /= -(camera.Position.z() / 2);
-        QRect viewPort = QRect(0.0, 0.0, width, height);
-        pos = QVector3D(event->pos().rx(),height - event->pos().ry(), 1);
-        qDebug() << pos;
-        QMatrix4x4 inverse = QMatrix4x4(viewMatrix * projMatrix).inverted();
-        QVector4D tmp(pos, 1.0f);
-        tmp.setX((tmp.x() - float(viewPort.x())) / float(viewPort.width()));
-        tmp.setY((tmp.y() - float(viewPort.y())) / float(viewPort.height()));
-        tmp = tmp * 2.0f - QVector4D(1.0f, 1.0f, 1.0f, 1.0f);
-        QVector4D obj = inverse * tmp;
-        pos = obj.toVector3D();
-        if (camera.Position.z() > 0) {
-            pos.setX(-pos.x());
-            pos.setY(-pos.y());
-        }
-        qDebug() << pos;
+    if (event->button() == Qt::RightButton) {
+        /* here remains a question: how to get the z?
+         * For now, I get z by testing the screen position of a sphere at world cordinate - (1, 0, 0).
+         */
+        float z = 0.995;
+        QVector3D worldPosition = QVector3D(event->x(), height - event->y(), z).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
+        joints.push_back(SkeletonJoint(worldPosition));
         update();
     }else if (event->button() == Qt::LeftButton){
-        lastMouseX = event->pos().rx();
-        lastMouseY = event->pos().ry();
+        lastMouseX = event->x();
+        lastMouseY = event->y();
+        lastPressMouseX = event->x();
+        lastPressMouseY = event->y();
         isMousePressed = true;
     }
 }
@@ -95,11 +86,11 @@ void MyOpenglWidget::mousePressEvent(QMouseEvent *event) {
 
 void MyOpenglWidget::mouseMoveEvent(QMouseEvent *event) {
     if (isMousePressed) {
-        int offsetX = event->pos().rx() - lastMouseX;
-        int offsetY = event->pos().ry() - lastMouseY;
+        int offsetX = event->x() - lastMouseX;
+        int offsetY = event->y() - lastMouseY;
         camera.ProcessMouseMovement(offsetX, offsetY, true);
-        lastMouseX = event->pos().rx();
-        lastMouseY = event->pos().ry();
+        lastMouseX = event->x();
+        lastMouseY = event->y();
         update();
     }
 }
@@ -109,6 +100,11 @@ void MyOpenglWidget::mouseMoveEvent(QMouseEvent *event) {
 void MyOpenglWidget::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         isMousePressed = false;
+        if (lastPressMouseX == event->x() && lastPressMouseY == event->y()) {
+            qDebug() << "same position";
+        }else {
+            qDebug() << "different position";
+        }
     }
 }
 
