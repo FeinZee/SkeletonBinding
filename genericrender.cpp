@@ -42,6 +42,8 @@ void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatri
     m_texture->bind(0);
     if (ifWireMode) {
        glPolygonMode(GL_FRONT_AND_BACK ,GL_LINE);
+    }else{
+       glPolygonMode(GL_FRONT_AND_BACK ,GL_FILL);
     }
     f->glDrawArrays(GL_TRIANGLES, 0, m_vertPoints.count()/3);
 

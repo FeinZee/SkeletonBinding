@@ -71,30 +71,36 @@ void MyOpenglWidget::paintGL(){
         s_selected_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, selectedJoint.getModelMatrix(), viewMatrix,
                                    camera.Position, lightLocation, QVector4D(0.6f, 0.6f, 0, 0));
     }
+    if (mode == CREATE_MODE && aJointIsSelected) {
+        QVector3D worldPosition = QVector3D(lastMouseX, height - lastMouseY, 0.996).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
+        bone_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), selectedJoint.getWorldCoordinate(), worldPosition, JOINT_RADIUS, projMatrix, viewMatrix, camera.Position);
+    }
 
-    bone_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), QVector3D(0.5, 0.5, 0), QVector3D(1, 1, 0), JOINT_RADIUS, projMatrix, viewMatrix, camera.Position);
+
 
 
 }
 
 void MyOpenglWidget::mousePressEvent(QMouseEvent *event) {
+    lastMouseX = event->x();
+    lastMouseY = event->y();
     if (event->button() == Qt::RightButton) {
         /* here remains a question: how to get the z?
          * For now, I get z by testing the screen position of a sphere at world cordinate - (1, 0, 0).
          */
+
         float z = 0.996;
         QVector3D worldPosition = QVector3D(event->x(), height - event->y(), z).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
-        joints.push_back(SkeletonJoint(worldPosition));
-        qDebug() << worldPosition;
-
-
+        SkeletonJoint newJoint = SkeletonJoint(worldPosition);
+        joints.push_back(newJoint);
+        aJointIsSelected = true;
+        selectedJoint = newJoint;
+        setMouseTracking(true);
         update();
     }else if (event->button() == Qt::LeftButton){
-        lastMouseX = event->x();
-        lastMouseY = event->y();
         lastPressMouseX = event->x();
         lastPressMouseY = event->y();
-        isMousePressed = true;
+        isLeftMousePressed = true;
     }
 }
 
@@ -109,12 +115,21 @@ float MyOpenglWidget::distance(int x1, int y1, int x2, int y2) {
 }
 
 void MyOpenglWidget::mouseMoveEvent(QMouseEvent *event) {
-    if (isMousePressed) {
+    if (isLeftMousePressed) {
+        // camera movement
         int offsetX = event->x() - lastMouseX;
         int offsetY = event->y() - lastMouseY;
         camera.ProcessMouseMovement(offsetX, offsetY, true);
         lastMouseX = event->x();
         lastMouseY = event->y();
+        update();
+    }
+    if (aJointIsSelected && mode == CREATE_MODE) {
+        // bone drawing
+
+        lastMouseX = event->x();
+        lastMouseY = event->y();
+
         update();
     }
 }
@@ -123,14 +138,13 @@ void MyOpenglWidget::mouseMoveEvent(QMouseEvent *event) {
 
 void MyOpenglWidget::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-        isMousePressed = false;
+        isLeftMousePressed = false;
         if (lastPressMouseX == event->x() && lastPressMouseY == event->y()) {
             // test if pick a joint
             bool PickSuccess = false;
             for (auto j: joints) {
                 QVector3D screenCoord = getScreenCoord(j.getWorldCoordinate());
                 if (distance(int(screenCoord.x()), int(screenCoord.y()), event->x(), event->y()) < 10) {
-                    qDebug() << "拾取到一个点" << j.getWorldCoordinate();
                     aJointIsSelected = true;
                     PickSuccess = true;
                     selectedJoint = j;
@@ -139,6 +153,7 @@ void MyOpenglWidget::mouseReleaseEvent(QMouseEvent *event) {
             }
             if (!PickSuccess) {
                 aJointIsSelected = false;
+                setMouseTracking(false);
             }
             update();
 
@@ -175,6 +190,10 @@ void MyOpenglWidget::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_L) {
         // look from top
         camera.lookFrom('l');
+    }
+    if (event->key() == Qt::Key_Q) {
+        aJointIsSelected = false;
+        setMouseTracking(false);
     }
     update();
 }

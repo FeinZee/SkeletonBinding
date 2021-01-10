@@ -14,6 +14,8 @@
 #include "pyramidrender.h"
 #include "solidsphererender.h"
 
+#define CREATE_MODE 1
+#define SELECT_MODE 2
 
 class MyOpenglWidget: public QOpenGLWidget, protected QOpenGLFunctions{
     Q_OBJECT
@@ -39,8 +41,8 @@ private:
     int width, height;
     int lastPressMouseX, lastPressMouseY;
     int lastMouseX, lastMouseY;
-    bool isMousePressed = false;
-    int mode;
+    bool isLeftMousePressed = false;
+    int mode = CREATE_MODE;
 
     /* about scene */
     Camera camera = Camera(QVector3D(0, 0, 3));

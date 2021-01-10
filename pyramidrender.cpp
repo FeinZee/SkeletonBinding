@@ -23,26 +23,25 @@ void PyramidRender::render(QOpenGLExtraFunctions *f, QVector3D startPoint, QVect
     float a2b2 = a*a + b*b;
     float p = rcb * rcb + 3 * a2b2 * a * a * radius * radius;
     p = sqrt(p);
-    float z = 0.5f * radius;
+    float z1 = 0.5f * radius;
+    float z2 = -z1;
     float y1 = (-rcb + p)/ (2 * a2b2);
-    float x1 = (- c * z - b * y1) / a;
+    float x1 = (- c * z1 - b * y1) / a;
     float y2 = (-rcb - p)/ (2 * a2b2);
-    float x2 = (- c * z - b * y2) / a;
-    points << x1 + startPoint.x() << y1 + startPoint.y() << z + startPoint.z() << startPoint.x() << startPoint.y() << startPoint.z() << endPoint.x() << endPoint.y() << endPoint.z();
-    points << x2 + startPoint.x() << y2 + startPoint.y() << z + startPoint.z() << startPoint.x() << startPoint.y() << startPoint.z() << endPoint.x() << endPoint.y() << endPoint.z();
+    float x2 = (- c * z2 - b * y2) / a;
 
-    QVector3D tmp(x1, y1, z);
+    QVector3D tmp(x1, y1, z1);
     QVector3D norm = QVector3D::crossProduct(tmp, startToEnd);
     norm.normalize();
     norm *= radius;
+    points << x1 + startPoint.x() << y1 + startPoint.y() << z1 + startPoint.z() << norm.x() + startPoint.x() << norm.y() + startPoint.y() << norm.z() + startPoint.z() << endPoint.x() << endPoint.y() << endPoint.z();
+    points << norm.x() + startPoint.x() << norm.y() + startPoint.y() << norm.z() + startPoint.z() << x2 + startPoint.x() << y2 + startPoint.y() << z2 + startPoint.z() << endPoint.x() << endPoint.y() << endPoint.z();
 
-    points << norm.x() + startPoint.x() << norm.y() + startPoint.y() << norm.z() + startPoint.z() << startPoint.x() << startPoint.y() << startPoint.z() << endPoint.x() << endPoint.y() << endPoint.z();
-    points << startPoint.x() - norm.x() << startPoint.y()- norm.y() << startPoint.z() - norm.z() << startPoint.x() << startPoint.y() << startPoint.z() << endPoint.x() << endPoint.y() << endPoint.z();
-
+    points << x2 + startPoint.x() << y2 + startPoint.y() << z2 + startPoint.z() << startPoint.x() - norm.x() << startPoint.y()- norm.y() << startPoint.z() - norm.z() << endPoint.x() << endPoint.y() << endPoint.z();
+    points << startPoint.x() - norm.x() << startPoint.y()- norm.y() << startPoint.z() - norm.z() << x1 + startPoint.x() << y1 + startPoint.y() << z1 + startPoint.z() << endPoint.x() << endPoint.y() << endPoint.z();
 
     m_vbo.bind();
     m_vbo.allocate(points.constData(), points.count() * sizeof(GLfloat));
-    qDebug() << points;
     glEnable(GL_CULL_FACE);
     m_program.bind();
     m_vbo.bind();
