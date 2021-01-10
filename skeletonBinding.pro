@@ -32,6 +32,7 @@ SOURCES += \
         myopenglwidget.cpp \
         objloader.cpp \
         pyramidrender.cpp \
+        skeleton.cpp \
         skeletonjoint.cpp \
         solidsphererender.cpp
 
@@ -43,6 +44,7 @@ HEADERS += \
         objloader.h \
         param.h \
         pyramidrender.h \
+        skeleton.h \
         skeletonjoint.h \
         solidsphererender.h
 

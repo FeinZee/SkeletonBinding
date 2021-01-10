@@ -56,30 +56,54 @@ void MyOpenglWidget::paintGL(){
 
     /* about obj */
     QMatrix4x4 viewMatrix = camera.GetViewMatrix();
-    // viewMatrix.lookAt(cameraLocation, targetLocation, QVector3D(0,1,0));
-
     QMatrix4x4 mMatrix;
     mMatrix.translate(0, -0.8f);
-    // mMatrix.rotate(obj_angleY,0,1,0);
     obj_renderer.render(f, projMatrix, viewMatrix, mMatrix, camera.Position, lightLocation, false);
+
     /* about skeleton */
-    for (auto joint: joints) {
+    // draw the skeleton
+    const QSet<QList<int>>& jointLists = skeleton.getJointLists();
+    QHash<int, SkeletonJoint> joints = skeleton.getJoints();
+    SkeletonJoint lastJoint;
+    bool isFirst = true;
+    for (auto jointList: jointLists) {
+        isFirst = true;
+        for(int id: jointList) {
+            if (!isFirst) {
+                bone_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), lastJoint.getWorldCoordinate(), joints[id].getWorldCoordinate(), JOINT_RADIUS, projMatrix, viewMatrix, camera.Position);
+            }
+            s_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, joints[id].getModelMatrix(), viewMatrix,
+                              camera.Position, lightLocation, QVector4D(0.6f, 0, 0, 0));
+            lastJoint = joints[id];
+            isFirst = false;
+        }
+
+    }
+    // draw the new joint list
+
+    isFirst = true;
+    if (rootJointOfNewList != -1) lastJoint = joints[rootJointOfNewList];
+    for (auto joint: newJointList) {
+        if ((isFirst && rootJointOfNewList != -1) || !isFirst) {
+            bone_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), lastJoint.getWorldCoordinate(), joint.getWorldCoordinate(), JOINT_RADIUS, projMatrix, viewMatrix, camera.Position);
+        }
         s_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, joint.getModelMatrix(), viewMatrix,
                           camera.Position, lightLocation, QVector4D(0.6f, 0, 0, 0));
+        lastJoint = joint;
+        isFirst = false;
     }
+    // draw the selected joint
     if (aJointIsSelected) {
         s_selected_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, selectedJoint.getModelMatrix(), viewMatrix,
                                    camera.Position, lightLocation, QVector4D(0.6f, 0.6f, 0, 0));
     }
+    // draw the current bone
     if (mode == CREATE_MODE && aJointIsSelected) {
         QVector3D worldPosition = QVector3D(lastMouseX, height - lastMouseY, 0.996).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
         bone_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), selectedJoint.getWorldCoordinate(), worldPosition, JOINT_RADIUS, projMatrix, viewMatrix, camera.Position);
     }
-
-
-
-
 }
+
 
 void MyOpenglWidget::mousePressEvent(QMouseEvent *event) {
     lastMouseX = event->x();
@@ -88,15 +112,21 @@ void MyOpenglWidget::mousePressEvent(QMouseEvent *event) {
         /* here remains a question: how to get the z?
          * For now, I get z by testing the screen position of a sphere at world cordinate - (1, 0, 0).
          */
+        if (mode == CREATE_MODE) {
+            if (aJointIsSelected || skeleton.isEmpty()) {
+                float z = 0.996;
+                QVector3D worldPosition = QVector3D(event->x(), height - event->y(), z).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
+                SkeletonJoint newJoint = SkeletonJoint(worldPosition);
+                newJointList.push_back(newJoint);
+                aJointIsSelected = true;
+                selectedJoint = newJoint;
+                setMouseTracking(true);
 
-        float z = 0.996;
-        QVector3D worldPosition = QVector3D(event->x(), height - event->y(), z).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
-        SkeletonJoint newJoint = SkeletonJoint(worldPosition);
-        joints.push_back(newJoint);
-        aJointIsSelected = true;
-        selectedJoint = newJoint;
-        setMouseTracking(true);
-        update();
+                update();
+            }else {
+                qDebug() << "先选中一个已存在关节，再继续创建。";
+            }
+        }
     }else if (event->button() == Qt::LeftButton){
         lastPressMouseX = event->x();
         lastPressMouseY = event->y();
@@ -140,23 +170,37 @@ void MyOpenglWidget::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         isLeftMousePressed = false;
         if (lastPressMouseX == event->x() && lastPressMouseY == event->y()) {
-            // test if pick a joint
+            // test if pick a joint from the skeleton
             bool PickSuccess = false;
-            for (auto j: joints) {
-                QVector3D screenCoord = getScreenCoord(j.getWorldCoordinate());
+
+            QHash<int, SkeletonJoint> joints = skeleton.getJoints();
+            QHashIterator<int, SkeletonJoint> i(joints);
+            while (i.hasNext()) {
+                i.next();
+                int id = i.key();
+                SkeletonJoint sj = i.value();
+                QVector3D screenCoord = getScreenCoord(sj.getWorldCoordinate());
                 if (distance(int(screenCoord.x()), int(screenCoord.y()), event->x(), event->y()) < 10) {
                     aJointIsSelected = true;
                     PickSuccess = true;
-                    selectedJoint = j;
+                    rootJointOfNewList = id;
+                    setMouseTracking(true);
+                    selectedJoint = sj;
                     break;
                 }
             }
-            if (!PickSuccess) {
+
+            if (!PickSuccess && aJointIsSelected) {
                 aJointIsSelected = false;
-                setMouseTracking(false);
+                if (newJointList.count() > 0) {
+                    qDebug() << "add new list with root = " << rootJointOfNewList << "count = " << newJointList.count();
+                    skeleton.addJointList(newJointList, rootJointOfNewList);
+                    newJointList.clear();
+                    rootJointOfNewList = -1;
+                    setMouseTracking(false);
+                }
             }
             update();
-
         }else {
         }
     }
@@ -194,6 +238,10 @@ void MyOpenglWidget::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Q) {
         aJointIsSelected = false;
         setMouseTracking(false);
+        qDebug() << "add new list with root = " << rootJointOfNewList << "count = " << newJointList.count();
+        skeleton.addJointList(newJointList, rootJointOfNewList);
+        newJointList.clear();
+        rootJointOfNewList = -1;
     }
     update();
 }

@@ -9,6 +9,7 @@
 #include <GL/gl.h>
 #include <QTimer>
 #include "camera.h"
+#include "skeleton.h"
 #include "skeletonjoint.h"
 #include "genericrender.h"
 #include "pyramidrender.h"
@@ -55,10 +56,13 @@ private:
     /* about skeleton */
     bool aJointIsSelected = false;
     SkeletonJoint selectedJoint;
-    std::vector<SkeletonJoint> joints;
+    Skeleton skeleton;
+    QList<SkeletonJoint> newJointList;
     SolidSphereRender s_renderer; // renderer for joints
     SolidSphereRender s_selected_renderer; // renderer for the selected joint
     PyramidRender bone_renderer;
+
+    int rootJointOfNewList = -1;
 };
 
 #endif // MYOPENGLWIDGET_H
