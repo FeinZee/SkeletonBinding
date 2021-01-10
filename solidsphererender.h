@@ -4,7 +4,9 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
 #include "param.h"
-
+/*
+ * 此类实现骨架关节（球体）的绘制
+ */
 class SolidSphereRender
 {
 public:

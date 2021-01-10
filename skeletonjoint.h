@@ -3,6 +3,9 @@
 
 #include <QMatrix4x4>
 
+/*
+ * 此类实现骨架的关节的逻辑
+ */
 class SkeletonJoint
 {
 public:
@@ -10,6 +13,7 @@ public:
     SkeletonJoint(QVector3D);
 
     QVector3D& getWorldCoordinate();
+    void setWorldCoordinate(QVector3D);
     QMatrix4x4 getModelMatrix();
 private:
     // 世界坐标

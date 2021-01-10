@@ -33,6 +33,7 @@ SOURCES += \
         objloader.cpp \
         pyramidrender.cpp \
         skeleton.cpp \
+        skeletonbinding.cpp \
         skeletonjoint.cpp \
         solidsphererender.cpp
 
@@ -45,6 +46,7 @@ HEADERS += \
         param.h \
         pyramidrender.h \
         skeleton.h \
+        skeletonbinding.h \
         skeletonjoint.h \
         solidsphererender.h
 

@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1245</width>
+    <width>1051</width>
     <height>891</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1100</width>
+    <height>16777215</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -17,56 +23,7 @@
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="2" column="1">
      <layout class="QGridLayout" name="modifyGridLayout">
-      <item row="2" column="2">
-       <widget class="QLineEdit" name="zPosEdit">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="yPosEdit">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QLabel" name="mousePressPosLabel">
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="xPosEdit">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="xPosLabel">
-        <property name="text">
-         <string>X方向</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="zPosLabel">
-        <property name="text">
-         <string>Z方向</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="yPosLabel">
-        <property name="text">
-         <string>Y方向</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="2">
+      <item row="7" column="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -78,6 +35,62 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>已选关节的世界坐标位置</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="zPosLabel">
+        <property name="text">
+         <string>Z方向</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="xPosLabel">
+        <property name="text">
+         <string>X方向</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="zPosEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="yPosEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="xPosEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="yPosLabel">
+        <property name="text">
+         <string>Y方向</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QPushButton" name="bindButton">
+        <property name="text">
+         <string>骨骼绑定</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -96,71 +109,25 @@
      </layout>
     </item>
     <item row="1" column="1">
-     <layout class="QGridLayout" name="createGridLayout" columnstretch="0,0">
+     <layout class="QGridLayout" name="createGridLayout" columnstretch="0,0,0,0,0">
       <property name="leftMargin">
        <number>0</number>
       </property>
       <property name="verticalSpacing">
        <number>7</number>
       </property>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="createJointBtn">
-        <property name="text">
-         <string>创建关节</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0">
-       <widget class="QPushButton" name="inSelectModeBtn">
-        <property name="text">
-         <string>进入选择模式</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="createBoneBtn">
-        <property name="text">
-         <string>创建骨骼</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
        <widget class="QPushButton" name="setRootBtn">
         <property name="text">
          <string>设为基结点</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="createBoneOKBtn">
-        <property name="text">
-         <string>完成</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="outSelectModeBtn">
-        <property name="text">
-         <string>退出选择模式</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QPushButton" name="deleteBtn">
-        <property name="text">
-         <string>删除</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="createJointOKBtn">
-        <property name="text">
-         <string>完成</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QComboBox" name="modeComboBox">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
         <item>
          <property name="text">
           <string>骨架创建模式</string>
@@ -168,7 +135,7 @@
         </item>
         <item>
          <property name="text">
-          <string>骨架修改模式</string>
+          <string>关节选择模式</string>
          </property>
         </item>
         <item>
@@ -176,11 +143,16 @@
           <string>运动模式</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>纯模型模式</string>
-         </property>
-        </item>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="wireModelButton">
+        <property name="text">
+         <string>线框模型</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>
@@ -192,12 +164,18 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1245</width>
+     <width>1051</width>
      <height>26</height>
     </rect>
    </property>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="maximumSize">
+    <size>
+     <width>900</width>
+     <height>16777215</height>
+    </size>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>

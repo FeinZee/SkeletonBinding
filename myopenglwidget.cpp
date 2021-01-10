@@ -38,10 +38,8 @@ void MyOpenglWidget::wheelEvent(QWheelEvent *event)
 {
     if (!event->pixelDelta().isNull()) {
         camera.ProcessMouseScroll(event->pixelDelta().y());
-        // cameraLocation.setZ(cameraLocation.z() + event->pixelDelta().y()); //重置视点z值
     } else if (!event->angleDelta().isNull()) {
         camera.ProcessMouseScroll((event->angleDelta()/120).y());
-        // cameraLocation.setZ(cameraLocation.z() + (event->angleDelta() / 120).y()); //重置视点z值
     }
     projMatrix.setToIdentity();
     projMatrix.perspective(camera.Zoom, float(width)/height, 0.01f, 100.0f);
@@ -57,8 +55,7 @@ void MyOpenglWidget::paintGL(){
     /* about obj */
     QMatrix4x4 viewMatrix = camera.GetViewMatrix();
     QMatrix4x4 mMatrix;
-    mMatrix.translate(0, -0.8f);
-    obj_renderer.render(f, projMatrix, viewMatrix, mMatrix, camera.Position, lightLocation, false);
+    obj_renderer.render(f, projMatrix, viewMatrix, mMatrix, camera.Position, lightLocation, modelWire);
 
     /* about skeleton */
     // draw the skeleton
@@ -92,14 +89,20 @@ void MyOpenglWidget::paintGL(){
         lastJoint = joint;
         isFirst = false;
     }
+    // draw the root joint
+    if (rootJointOfAll != -1) {
+        s_selected_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, joints[rootJointOfAll].getModelMatrix(), viewMatrix,
+                                   camera.Position, lightLocation, QVector4D(0.0f, 0.6f, 0.0f, 0));
+    }
     // draw the selected joint
     if (aJointIsSelected) {
         s_selected_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), projMatrix, selectedJoint.getModelMatrix(), viewMatrix,
                                    camera.Position, lightLocation, QVector4D(0.6f, 0.6f, 0, 0));
     }
+
     // draw the current bone
     if (mode == CREATE_MODE && aJointIsSelected) {
-        QVector3D worldPosition = QVector3D(lastMouseX, height - lastMouseY, 0.996).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
+        QVector3D worldPosition = QVector3D(lastMouseX, height - lastMouseY, 0.9968).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
         bone_renderer.render(QOpenGLContext::currentContext()->extraFunctions(), selectedJoint.getWorldCoordinate(), worldPosition, JOINT_RADIUS, projMatrix, viewMatrix, camera.Position);
     }
 }
@@ -109,22 +112,22 @@ void MyOpenglWidget::mousePressEvent(QMouseEvent *event) {
     lastMouseX = event->x();
     lastMouseY = event->y();
     if (event->button() == Qt::RightButton) {
-        /* here remains a question: how to get the z?
-         * For now, I get z by testing the screen position of a sphere at world cordinate - (1, 0, 0).
+        /* 这里z值的选择曾尝试用glu获取失败，只能尝试出比较合适的z值，使得生成的点在世界坐标 z=0 附近
          */
         if (mode == CREATE_MODE) {
             if (aJointIsSelected || skeleton.isEmpty()) {
-                float z = 0.996;
+                float z = 0.9968;
                 QVector3D worldPosition = QVector3D(event->x(), height - event->y(), z).unproject(camera.GetViewMatrix(), projMatrix, QRect(0, 0, width, height));
                 SkeletonJoint newJoint = SkeletonJoint(worldPosition);
                 newJointList.push_back(newJoint);
                 aJointIsSelected = true;
                 selectedJoint = newJoint;
+                emit setWorldCoord(selectedJoint.getWorldCoordinate());
                 setMouseTracking(true);
 
                 update();
             }else {
-                qDebug() << "先选中一个已存在关节，再继续创建。";
+                emit hint("先选中一个已存在关节，再继续创建。");
             }
         }
     }else if (event->button() == Qt::LeftButton){
@@ -156,10 +159,8 @@ void MyOpenglWidget::mouseMoveEvent(QMouseEvent *event) {
     }
     if (aJointIsSelected && mode == CREATE_MODE) {
         // bone drawing
-
         lastMouseX = event->x();
         lastMouseY = event->y();
-
         update();
     }
 }
@@ -170,7 +171,7 @@ void MyOpenglWidget::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         isLeftMousePressed = false;
         if (lastPressMouseX == event->x() && lastPressMouseY == event->y()) {
-            // test if pick a joint from the skeleton
+            // 检测是否左键选中了某个关节
             bool PickSuccess = false;
 
             QHash<int, SkeletonJoint> joints = skeleton.getJoints();
@@ -184,16 +185,21 @@ void MyOpenglWidget::mouseReleaseEvent(QMouseEvent *event) {
                     aJointIsSelected = true;
                     PickSuccess = true;
                     rootJointOfNewList = id;
-                    setMouseTracking(true);
+                    if (mode == CREATE_MODE) {
+                        setMouseTracking(true);
+                    }
                     selectedJoint = sj;
+                    selectedJointId = id;
+                    emit setWorldCoord(selectedJoint.getWorldCoordinate());
                     break;
                 }
             }
-
+            // 如果是左键点在其他位置，就停止当前关节链的创建，并加入骨架
             if (!PickSuccess && aJointIsSelected) {
                 aJointIsSelected = false;
+                selectedJointId = -1;
+                emit clearLineEdit();
                 if (newJointList.count() > 0) {
-                    qDebug() << "add new list with root = " << rootJointOfNewList << "count = " << newJointList.count();
                     skeleton.addJointList(newJointList, rootJointOfNewList);
                     newJointList.clear();
                     rootJointOfNewList = -1;
@@ -237,12 +243,88 @@ void MyOpenglWidget::keyPressEvent(QKeyEvent *event) {
     }
     if (event->key() == Qt::Key_Q) {
         aJointIsSelected = false;
+        emit clearLineEdit();
         setMouseTracking(false);
-        qDebug() << "add new list with root = " << rootJointOfNewList << "count = " << newJointList.count();
         skeleton.addJointList(newJointList, rootJointOfNewList);
         newJointList.clear();
         rootJointOfNewList = -1;
     }
     update();
+}
+
+/* slots */
+void MyOpenglWidget::modeChanged(int modeIdx)
+{
+    mode = modeIdx;
+    if (mode == CREATE_MODE) {
+        emit LineEditDisable(true);
+    }else if (mode == SELECT_MODE) {
+        emit LineEditDisable(false);
+    }else if (mode == MOVE_MODE) {
+        emit LineEditDisable(false);
+    }
+}
+
+void MyOpenglWidget::CoordinateChanged(float x, float y, float z)
+{
+    if (aJointIsSelected) {
+        if (mode == SELECT_MODE) {
+            if (selectedJointId == rootJointOfAll) {
+                // all joints move
+                QVector3D oldPos = skeleton.joints[rootJointOfAll].getWorldCoordinate();
+                float offsetX = x - oldPos.x();
+                float offsetY = y - oldPos.y();
+                float offsetZ = z - oldPos.z();
+                for (int i = 0; i < skeleton.joints.count(); ++i) {
+                    skeleton.joints[i].setWorldCoordinate(skeleton.joints[i].getWorldCoordinate() + QVector3D(offsetX, offsetY, offsetZ));
+                }
+                selectedJoint.setWorldCoordinate(QVector3D(x, y, z));
+            }else{
+                skeleton.joints[selectedJointId].setWorldCoordinate(QVector3D(x, y, z));
+                selectedJoint.setWorldCoordinate(QVector3D(x, y, z));
+            }
+        }else if (mode == MOVE_MODE) {
+            QVector3D oldPos = skeleton.joints[selectedJointId].getWorldCoordinate();
+            float offsetX = x - oldPos.x();
+            float offsetY = y - oldPos.y();
+            float offsetZ = z - oldPos.z();
+            skeleton.joints[selectedJointId].setWorldCoordinate(QVector3D(x, y, z));
+            selectedJoint.setWorldCoordinate(QVector3D(x, y, z));
+            skeletonBind.move(selectedJointId, QVector3D(offsetX, offsetY, offsetZ));
+            obj_renderer.resetVertices(skeletonBind.getVertices());
+        }
+        update();
+    }else{
+        emit hint("请先选中一个关节");
+    }
+}
+
+void MyOpenglWidget::modelWireMode(bool result)
+{
+    modelWire = result;
+    update();
+}
+
+void MyOpenglWidget::setRootJoint() {
+    if (mode != SELECT_MODE) {
+        mode = SELECT_MODE;
+        emit LineEditDisable(false);
+        emit modeComboBoxShouldChange(SELECT_MODE);
+    }
+    if (aJointIsSelected){
+        rootJointOfAll = selectedJointId;
+        aJointIsSelected = false;
+        selectedJointId = -1;
+        emit clearLineEdit();
+        update();
+    }else{
+        emit hint("请先选中一个关节");
+    }
+}
+
+void MyOpenglWidget::bindSkeleton() {
+    skeletonBind.beginBinding(skeleton, obj_renderer.getVertices());
+    emit hint("绑定完成");
+    emit modeComboBoxShouldChange(MOVE_MODE);
 }
 

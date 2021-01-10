@@ -21,6 +21,14 @@ void GenericRender::initsize(QString filename, const QImage &textureImg){
     m_texture->setWrapMode(QOpenGLTexture::ClampToEdge);
     m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Linear);
 }
+
+void GenericRender::resetVertices(const QVector<float>& v){
+    QVector<float> points;
+    points << v << m_texturePoints << m_normalPoints;
+    m_vbo.bind();
+    m_vbo.allocate(points.data(), points.count() * sizeof (float));
+}
+
 void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatrix4x4 &vMatrix,
                            QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation, bool ifWireMode){
     m_program.bind();
@@ -53,4 +61,8 @@ void GenericRender::render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatri
     m_texture->release();
     m_vbo.release();
     m_program.release();
+}
+
+const QVector<float>& GenericRender::getVertices(){
+    return m_vertPoints;
 }

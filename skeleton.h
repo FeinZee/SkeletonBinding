@@ -11,12 +11,15 @@ public:
     bool rootJointDetermined();
     const QSet<QList<int>>& getJointLists();
     const QHash<int, SkeletonJoint>& getJoints();
+    void findNearestBone(QVector3D point, int& id1, int& id2, float& weight);
+    float pointToSegDistance(QVector3D& p, const QVector3D& p1, const QVector3D& p2, float& weight);
     bool isEmpty();
 private:
     int jointCount = 0;
     int rootJointId = -1;
-    QHash<int, SkeletonJoint> joints;
     QSet<QList<int>> jointLists;
+public:
+    QHash<int, SkeletonJoint> joints;
 };
 
 #endif // SKELETON_H

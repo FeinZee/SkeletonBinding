@@ -12,6 +12,8 @@ class GenericRender
 public:
     GenericRender() = default;
     void initsize(QString filename, const QImage &textureImg);
+    void resetVertices(const QVector<float> &v);
+    const QVector<float>& getVertices();
     void render(QOpenGLExtraFunctions *f, QMatrix4x4 &pMatrix, QMatrix4x4 &vMatrix,
                 QMatrix4x4 &mMatrix, QVector3D &cameraLocation, QVector3D &lightLocation, bool ifWireMode);
 private:

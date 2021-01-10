@@ -55,7 +55,6 @@ bool ObjLoader::load(QString fileName, QVector<float> &vPoints,QVector<float> &t
                 nPoints << normalPoints.at((nPointSizes + nIndex) * 3 + 1);
                 nPoints << normalPoints.at((nPointSizes + nIndex) * 3 + 2);
             }
-
             vertextPoints.clear();
             texturePoints.clear();
             normalPoints.clear();
@@ -78,7 +77,7 @@ bool ObjLoader::load(QString fileName, QVector<float> &vPoints,QVector<float> &t
                 return str.toFloat();
             });
         }else if(dataType == "f"){
-            // 这里原本写的是到strValues.end(), 但stone.obj是有f为4个点的，暂时没实现
+            // 这里原本写的是到strValues.end(), 但有的obj文件一个面有4个点, 此处没实现
             std::transform(strValues.begin(),strValues.begin() + 3,std::back_inserter(facesIndexs),[](QByteArray &str){
                 QList<QByteArray> intStr = str.split('/');
 

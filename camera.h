@@ -10,6 +10,10 @@ const float SPEED       =  2.5f;
 const float SENSITIVITY =  0.05f;
 const float ZOOM        =  45.0f;
 
+/*
+ * 此类是摄像机类
+ * 参考：https://learnopengl-cn.github.io/
+ */
 class Camera
 {
 public:
@@ -48,7 +52,7 @@ public:
 
     void lookFrom(char direction){
         if (direction == 'f') {
-            Position = QVector3D(0, 0, 3);
+            Position = QVector3D(0, 0.8, 3);
             Yaw = YAW;
             Pitch = PITCH;
             Front = QVector3D(0, 0, -1);
@@ -60,13 +64,13 @@ public:
             Front = QVector3D(0, -1, 0);
         }
         if (direction == 'l') {
-            Position = QVector3D(-3, 0, 0);
+            Position = QVector3D(-3, 0.8, 0);
             Yaw = 0;
             Pitch = 0;
             Front = QVector3D(1, 0, 0);
         }
         if (direction == 'r') {
-            Position = QVector3D(3, 0, 0);
+            Position = QVector3D(3, 0.8, 0);
             Front = QVector3D(-1, 0, 0);
             Yaw = -180;
             Pitch = 0;

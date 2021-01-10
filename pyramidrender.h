@@ -5,6 +5,9 @@
 #include <QOpenGLBuffer>
 #include "param.h"
 
+/*
+ * 此类绘制了骨头（立体锥）
+ */
 class PyramidRender
 {
 public:
